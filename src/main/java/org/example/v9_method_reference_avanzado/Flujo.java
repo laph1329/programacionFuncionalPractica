@@ -1,9 +1,10 @@
-package org.example.v5_flujo;
-
-import org.example.v5_flujo.interfaces.*;
+package org.example.v9_method_reference_avanzado;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.function.*;
+
 //Usando interfaces como parametros
 public class Flujo<T> {
 
@@ -13,42 +14,48 @@ public class Flujo<T> {
         this.lista=lista;
     }
 
-    public static <T> Flujo<T> proveer(int size, Proveedor<T> proveedor){
+    public static <T> Flujo<T> proveer(int size, Supplier<T> supplier){
         List<T> resultado=new ArrayList<>();
         for(int i=0;i<size;i++){
-            resultado.add(proveedor.obtener());
+            resultado.add(supplier.get());
         }
         return new Flujo<>(resultado);
     }
 
-    public Flujo<T> filtrar(Predicado<T> predicado){
+    public Flujo<T> filtrar(Predicate<T> predicate){
         List<T> listaFiltrada=new ArrayList<>();
         for(T n : lista){
-            if(predicado.aplicar(n)){
+            if(predicate.test(n)){
                 listaFiltrada.add(n);
             }
         }
         return new Flujo<>(listaFiltrada);
     }
-    public <R> Flujo<R> transformar(Transformador<T,R> transformador){
+    public <R> Flujo<R> transformar(Function<T,R> function){
         List<R> listaCuadrados=new ArrayList<>();
         for(T n : lista){
-            listaCuadrados.add(transformador.aplicar(n));
+            listaCuadrados.add(function.apply(n));
         }
         return new Flujo<> (listaCuadrados);
     }
 
-    public Flujo<T> imprimirLista(Consumidor<T> consumidor){
+    public Flujo<T> imprimirLista(Consumer<T> consumer){
         for(T n : lista){
-            consumidor.aceptar(n);
+            consumer.accept(n);
         }
         return new Flujo<>(lista);
     }
 
-    public T reducir(T valorInicial, OperadorBinario<T> reductor){
+    public Flujo<T> ordenar(Comparator<T> comparator){
+        List<T> listaOrdenada=new ArrayList<>(lista);
+        listaOrdenada.sort(comparator);
+        return new Flujo<>(listaOrdenada);
+    }
+
+    public T reducir(T valorInicial, BinaryOperator<T> reductor){
         T resultado=valorInicial;
         for(T n : lista){
-            resultado=reductor.reducir(resultado,n);
+            resultado=reductor.apply(resultado,n);
         }
         return resultado;
     }

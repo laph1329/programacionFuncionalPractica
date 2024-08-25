@@ -1,6 +1,6 @@
-package org.example.v5_flujo;
+package org.example.v6_lambda;
 
-import org.example.v5_flujo.interfaces.*;
+import org.example.v6_lambda.interfaces.*;
 
 import java.util.ArrayList;
 import java.util.List;
